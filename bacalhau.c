@@ -49,8 +49,7 @@ Resultado acharMenoresDistancias(Ponto* pontos, int inicio, int fim) {
         double d1 = distancia(pontos[inicio], pontos[inicio + 1]);
         double d2 = distancia(pontos[inicio], pontos[fim]);
         double d3 = distancia(pontos[inicio + 1], pontos[fim]);
-
-        
+                
 
     }
 
