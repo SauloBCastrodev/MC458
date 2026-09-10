@@ -27,12 +27,12 @@ double distancia(Ponto p1, Ponto p2) {
 void adicionarPar(Resultado* res, int id1, int id2) {
     res->pares = realloc(res->pares, (res->qtd+1)*sizeof(Par));
     res->pares[res->qtd].u = (id1 < id2) ? id1 : id2;
-    res->pares[res->qtd].v = (id1 < id2) ? id1 : id2;
+    res->pares[res->qtd].v = (id1 < id2) ? id2 : id1;
     res->qtd++;
  }
 
 Resultado acharMenoresDistancias(Ponto* pontos, int inicio, int fim) {
-    int tamanho = inicio - fim + 1;
+    int tamanho = fim - inicio + 1;
     Resultado res;
     res.dist = DBL_MAX;
     res.pares = NULL;
@@ -44,10 +44,36 @@ Resultado acharMenoresDistancias(Ponto* pontos, int inicio, int fim) {
         return res;
     }
 
+    // Refazer para caso base 3
+    if (tamanho == 3) {
+        
+    }
+
     int meio = inicio + (fim - inicio)/2;
     Resultado esq = acharMenoresDistancias(pontos, inicio, meio);
     Resultado dir = acharMenoresDistancias(pontos, meio + 1, fim);
     
+    if (esq.dist < dir.dist) {
+        res.dist = esq.dist;
+        res.pares = esq.pares;
+        res.qtd = esq.qtd;
+    }
+
+    else if (esq.dist > dir.dist) {
+        res.dist = dir.dist;
+        res.pares = dir.pares;
+        res.qtd = dir.qtd;
+    }
+
+    else {
+        res.dist = esq.dist;
+        res.pares = esq.pares;
+        for (int i = 0; i < (fim - meio - 1); i++) {
+            adicionar(&res.pares, dir.pares[i].u, dir.pares[i].v);
+        }
+    }
+
+    return res;
 }
 
 // Função auxiliar que compara as coordenadas x para usar no qsort
