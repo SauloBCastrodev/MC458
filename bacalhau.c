@@ -46,7 +46,12 @@ Resultado acharMenoresDistancias(Ponto* pontos, int inicio, int fim) {
 
     // Refazer para caso base 3
     if (tamanho == 3) {
+        double d1 = distancia(pontos[inicio], pontos[inicio + 1]);
+        double d2 = distancia(pontos[inicio], pontos[fim]);
+        double d3 = distancia(pontos[inicio + 1], pontos[fim]);
+
         
+
     }
 
     int meio = inicio + (fim - inicio)/2;
