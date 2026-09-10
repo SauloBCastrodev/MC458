@@ -38,44 +38,83 @@ Resultado acharMenoresDistancias(Ponto* pontos, int inicio, int fim) {
     res.pares = NULL;
     res.qtd = 0;
 
-    if (tamanho == 2) {
-        res.dist = distancia(pontos[inicio], pontos[fim]);
-        adicionarPar(&res, pontos[inicio].id, pontos[fim].id);
+    // Ao invés de um monte de if, vai checando se a distância é menor, e vai substituindo ou adicionando com base nisso
+    if (tamanho <= 3) {
+        for (int i = inicio; i <= fim; i++) {
+            for (int j = i + 1; j <= fim; j++) {
+                double d = distancia(pontos[i], pontos[j]);
+                if (d < res.dist) {
+                    res.dist = d;
+                    free(res.pares);
+                    res.pares = NULL;
+                    res.qtd = 0;
+                    adicionarPar(&res, pontos[i].id, pontos[j].id);
+                }
+                else if (d == res.dist) {
+                    adicionarPar(&res, pontos[i].id, pontos[j].id);
+                }
+            }
+        }
         return res;
     }
 
-    // Refazer para caso base 3
-    if (tamanho == 3) {
-        double d1 = distancia(pontos[inicio], pontos[inicio + 1]);
-        double d2 = distancia(pontos[inicio], pontos[fim]);
-        double d3 = distancia(pontos[inicio + 1], pontos[fim]);
-                
-
-    }
-
     int meio = inicio + (fim - inicio)/2;
+    // Chamadas recursivas, dividindo em duas metades o problema
     Resultado esq = acharMenoresDistancias(pontos, inicio, meio);
     Resultado dir = acharMenoresDistancias(pontos, meio + 1, fim);
     
+    // Checagens pra achar o lado com menor distância, ou checar se os dois lados tem a mesma menor distância
     if (esq.dist < dir.dist) {
         res.dist = esq.dist;
         res.pares = esq.pares;
         res.qtd = esq.qtd;
+        free(dir.pares);
     }
 
     else if (esq.dist > dir.dist) {
         res.dist = dir.dist;
         res.pares = dir.pares;
         res.qtd = dir.qtd;
+        free(esq.pares);
     }
 
     else {
         res.dist = esq.dist;
         res.pares = esq.pares;
-        for (int i = 0; i < (fim - meio - 1); i++) {
-            adicionar(&res.pares, dir.pares[i].u, dir.pares[i].v);
+        for (int i = 0; i < dir.qtd; i++) {
+            adicionarPar(&res.pares, dir.pares[i].u, dir.pares[i].v);
+        }
+        free(dir.pares);
+    }
+
+    // Checa todos os pontos 
+    Ponto* faixa = malloc(tamanho*sizeof(Ponto));
+    for (int i = inicio; i <= fim; i++) {
+        if (fabs(pontos[i].x - pontos[i].x) < res.dist) {
+            faixa[i] = pontos[i];
         }
     }
+
+    qsort(faixa, tamanho, sizeof(Ponto), comparaY);
+
+    for (int i = 0; i <= tamanho; i++) {
+        for (int j = i + 1; j <= tamanho; j++) {
+            if (faixa[j].y - faixa[i].y >= res.dist) {
+                break;
+            }
+            double d = distancia(faixa[i], faixa[j]);
+            if (d < res.dist) {
+                res.dist = d;
+                free(res.pares);
+                adicionarPar(&res.pares, faixa[i].id, faixa[j].id);
+            }
+            if (d == res.dist) {
+                adicionarPar(&res.pares, faixa[i].id, faixa[j].id);
+            }
+        }
+    }
+
+    free(faixa);
 
     return res;
 }
@@ -97,6 +136,7 @@ int comparaY(const void* a, const void* b) {
     if (p1->y < p2->y) return -1;
     if (p1->y > p2->y) return 1;
     return 0;
+
 }
 
 int main() {
@@ -113,6 +153,9 @@ int main() {
     // qsort é O(nlogn)
     qsort(pontos, n, sizeof(Ponto), comparaX);
 
+    Resultado res = acharMenoresDistancias(pontos, 0, n - 1);
+
     free(pontos);
     return 0;
+
 }
