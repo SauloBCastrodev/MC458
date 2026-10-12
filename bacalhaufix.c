@@ -1,3 +1,5 @@
+// Nome: Yuri Antonio de Paula; RA: 259692; Nome: Saulo Barroso Castro; RA: 199121
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
