@@ -12,11 +12,17 @@ void swap(int *a, int *b) {
 
 // 1. INSERTION SORT (Usado para subarrays pequenos)
 void insertionSort(int arr[], int left, int right) {
-    ??????????
-    ??????? ????????();
-        ������ 00 FF FF 3F 3F 3F
-        FF FF FF FF FF FF FF FF
-        ??????? ???????? ???????? 
+    for (int i = left + 1; i <= right; i++) {
+        int atual = arr[i];
+        int j = i - 1;
+        // Move para direita os elementos maiores que atual
+        while (j >= left && arr[j] > atual) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        
+        arr[j + 1] = atual;
+    }
 }
 
 // 2. HEAPSORT E FUNÇÕES DE HEAP (Usado quando a recursão fica muito profunda)
@@ -50,11 +56,14 @@ void heapSort(int arr[], int left, int right) {
 
 // 3. QUICKSORT PARTITION (Motor principal usando Mediana de Três)
 void medianOfThreeSwap(int arr[], int a, int b, int c) {
-    if(arr[a] > arr[b]) {
+    if (arr[a] > arr[b]) {
         swap(&arr[a], &arr[b]);
     }
-    if(arr[b] > arr[c]) {
+    if (arr[b] > arr[c]) {
         swap(&arr[b], &arr[c]);
+    }
+    if (arr[a] > arr[b]) {
+        swap(&arr[a], &arr[b]);
     }
 }
 
