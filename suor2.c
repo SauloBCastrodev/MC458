@@ -1,6 +1,8 @@
+// Nome: Yuri Antonio de Paula; RA: 259692; Nome: Saulo Barroso Castro; RA: 199121  
+
 #include <stdio.h>
 #include <stdlib.h>
-#define INF 1000000000000000LL
+#define MAX 1000000000000000LL
 
 int main() {
 
@@ -17,7 +19,7 @@ int main() {
     }
 
     long long dp[1000][100];
-    long long melhor = INF;
+    long long melhor = MAX;
 
     for (int f = 0; f < m; f++) {
         for (int j = 0; j < m; j++) {
@@ -25,19 +27,25 @@ int main() {
                 dp[0][j] = c[0][j];
             }
             else { 
-                dp[0][j] = INF;
+                dp[0][j] = MAX;
             }
         }
 
         for (int i = 1; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                long long min = INF;
-                for(int z = 0; z < m; z++) {
-                    if (dp[i-1][z] < min && z != j) {
-                        min = dp[i-1][z];
+            long long min1 = MAX, min2 = MAX;
+            int cor1 = -1;
+            for(int z = 0; z < m; z++) {
+                    if(dp[i-1][z] < min1) {
+                        min2 = min1;
+                        min1 = dp[i-1][z];
+                        cor1 = z;
+                    } else if (dp[i-1][z] < min2) {
+                        min2 = dp[i-1][z];
                     }
-                }
-                dp[i][j] = c[i][j] + min;
+            }
+            for (int j = 0; j < m; j++) {
+                long long melhorAnt = (j != cor1) ? min1 : min2;
+                dp[i][j] = c[i][j] + melhorAnt;
             }
         }
 
@@ -46,7 +54,7 @@ int main() {
         }
     }
 
-    if (melhor >= INF) {
+    if (melhor >= MAX) {
         printf("-1\n");
     }
     else {
